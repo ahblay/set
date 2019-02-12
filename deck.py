@@ -1,6 +1,7 @@
 from random import shuffle
 from card import Card
-
+from utilities import ncr
+import itertools
 
 class Deck:
     def __init__(self):
@@ -74,4 +75,11 @@ class Deck:
         return True
 
     def count_sets(self):
-        pass
+        combos = itertools.combinations(self.play, 3)
+        print(combos)
+        set_counter = 0
+        for combo in combos:
+            print(combo)
+            if self.is_set(combo):
+                set_counter += 1
+        return set_counter

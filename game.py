@@ -93,6 +93,8 @@ class Game(arcade.Window):
         """
         Called when the user presses a mouse button.
         """
+        print(self.deck.count_sets())
+
         for card in self.deck.play:
             if card.location[2] < x < card.location[0] and card.location[3] < y < card.location[1]:
                 if card in self.selected:
