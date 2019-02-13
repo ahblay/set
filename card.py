@@ -9,6 +9,7 @@ class Card:
         self.quantity = quantity
         self.location = ()
         self.border = {'color': arcade.color.GRAY, 'width': 1}
+        self.overflow = False
 
     def draw(self, loc_x, loc_y):
         if self.shape == 'squiggle':

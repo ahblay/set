@@ -19,6 +19,7 @@ class Game(arcade.Window):
 
         self.deck = None
         self.selected = []
+        self.num_sets = 0
 
     def setup(self):
         self.deck = Deck()
@@ -29,6 +30,7 @@ class Game(arcade.Window):
                 max_x, max_y, min_x, min_y = self.card_width + col, row, col, row - self.card_height
                 coords.append((max_x, max_y, min_x, min_y))
         self.deck.deal(12, coords)
+        self.num_sets = self.deck.count_sets()
 
     def draw_cards(self):
         for card in self.deck.play:
@@ -48,6 +50,34 @@ class Game(arcade.Window):
         else:
             raise Exception('Card has no shape attribute.')
 
+    def draw_set_counter(self, n):
+        text = f"Possible sets: {n}"
+        arcade.draw_text(text,
+                         self.board_width,
+                         self.window_height - self.card_gap - 15,
+                         arcade.color.BLACK,
+                         14)
+
+    def draw_cards_remaining(self):
+        text = f"Cards remaining: {len(self.deck.deck)}"
+        arcade.draw_text(text,
+                         self.board_width,
+                         self.window_height - self.card_gap - 40,
+                         arcade.color.BLACK,
+                         14)
+
+    def handle_extra_cards(self):
+        counter = 0
+        while self.num_sets == 0:
+            max_x = 4 * self.card_width + 4 * self.card_gap
+            max_y = self.card_height + self.card_gap + counter
+            min_x = 3 * self.card_width + 4 * self.card_gap
+            min_y = self.card_gap + counter
+            self.deck.deal(1, [(max_x, max_y, min_x, min_y)])
+            self.deck.play[-1].overflow = True
+            self.num_sets = self.deck.count_sets()
+            counter += self.card_height + self.card_gap
+
     def on_draw(self):
         """
         Render the screen.
@@ -58,7 +88,10 @@ class Game(arcade.Window):
         arcade.start_render()
 
         # Call draw() on all your sprite lists below
+        self.draw_set_counter(self.num_sets)
+        self.draw_cards_remaining()
         self.draw_cards()
+        self.handle_extra_cards()
 
     def update(self, delta_time):
         """
@@ -93,7 +126,6 @@ class Game(arcade.Window):
         """
         Called when the user presses a mouse button.
         """
-        print(self.deck.count_sets())
 
         for card in self.deck.play:
             if card.location[2] < x < card.location[0] and card.location[3] < y < card.location[1]:
@@ -108,13 +140,16 @@ class Game(arcade.Window):
 
         if self.deck.is_set(self.selected):
             print('SET FOUND!')
-            locations = [card.location for card in self.selected]
-            print(locations)
-            self.deck.remove(locations, cards=self.selected)
+            locations = [card.location for card in self.selected if not card.overflow]
+            self.deck.remove(cards=self.selected)
+            for card in self.deck.play:
+                if card.overflow:
+                    card.location = locations.pop(0)
+            self.deck.redeal(locations)
             self.selected = []
+            self.num_sets = self.deck.count_sets()
         else:
             print('Not a set...')
-
 
     def on_mouse_release(self, x, y, button, key_modifiers):
         """

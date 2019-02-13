@@ -1,7 +1,7 @@
 from random import shuffle
 from card import Card
-from utilities import ncr
 import itertools
+
 
 class Deck:
     def __init__(self):
@@ -29,29 +29,32 @@ class Deck:
         play = []
         i = 0
         for _ in range(num):
-            card = self.deck.pop(0)
-            card.location = locations[i]
-            play.append(card)
-            i += 1
+            try:
+                card = self.deck.pop(0)
+                card.location = locations[i]
+                play.append(card)
+                i += 1
+            except IndexError:
+                break
         self.play += play
 
-    def remove(self, locations, indices=None, cards=None):
+    def remove(self, indices=None, cards=None):
         if indices and cards:
             raise Exception("Both indices and cards provided. TMI.")
         if indices:
             for index in indices:
                 del self.play[index]
-            self.redeal(locations)
+            #self.redeal(locations)
         if cards:
             for card in cards:
                 self.play.remove(card)
-            self.redeal(locations)
+            #self.redeal(locations)
         else:
             raise Exception("No indices or cards provided.")
 
     def redeal(self, locations):
         i = 0
-        while len(self.play) < 12:
+        while len(self.play) < 12 and len(self.deck) > 0:
             self.deal(1, [locations[i]])
             i += 1
 
@@ -76,10 +79,8 @@ class Deck:
 
     def count_sets(self):
         combos = itertools.combinations(self.play, 3)
-        print(combos)
         set_counter = 0
         for combo in combos:
-            print(combo)
             if self.is_set(combo):
                 set_counter += 1
         return set_counter
