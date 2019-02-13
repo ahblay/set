@@ -44,11 +44,9 @@ class Deck:
         if indices:
             for index in indices:
                 del self.play[index]
-            #self.redeal(locations)
         if cards:
             for card in cards:
                 self.play.remove(card)
-            #self.redeal(locations)
         else:
             raise Exception("No indices or cards provided.")
 

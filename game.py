@@ -79,54 +79,26 @@ class Game(arcade.Window):
             counter += self.card_height + self.card_gap
 
     def on_draw(self):
-        """
-        Render the screen.
-        """
-
-        # This command should happen before we start drawing. It will clear
-        # the screen to the background color, and erase what we drew last frame.
         arcade.start_render()
 
-        # Call draw() on all your sprite lists below
         self.draw_set_counter(self.num_sets)
         self.draw_cards_remaining()
         self.draw_cards()
         self.handle_extra_cards()
 
     def update(self, delta_time):
-        """
-        All the logic to move, and the game logic goes here.
-        Normally, you'll call update() on the sprite lists that
-        need it.
-        """
         pass
 
     def on_key_press(self, key, key_modifiers):
-        """
-        Called whenever a key on the keyboard is pressed.
-
-        For a full list of keys, see:
-        http://arcade.academy/arcade.key.html
-        """
         pass
 
     def on_key_release(self, key, key_modifiers):
-        """
-        Called whenever the user lets off a previously pressed key.
-        """
         pass
 
     def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """
-        Called whenever the mouse moves.
-        """
         pass
 
     def on_mouse_press(self, x, y, button, key_modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
-
         for card in self.deck.play:
             if card.location[2] < x < card.location[0] and card.location[3] < y < card.location[1]:
                 if card in self.selected:
@@ -152,14 +124,10 @@ class Game(arcade.Window):
             print('Not a set...')
 
     def on_mouse_release(self, x, y, button, key_modifiers):
-        """
-        Called when a user releases a mouse button.
-        """
         pass
 
 
 def main():
-    """ Main method """
     card_width = 300
     card_height = 175
     card_gap = 25
